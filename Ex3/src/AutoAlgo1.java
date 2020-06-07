@@ -36,6 +36,7 @@ public class AutoAlgo1 {
 	
 	//Graph mGraph = new Graph();
 	DefaultDirectedGraph<String, DefaultEdge> mGraph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+	DefaultDirectedGraph<String, DefaultEdge> fullGraph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
 	ArrayList<Point> suspectedPoints = new ArrayList<Point>();
 	
 	CPU ai_cpu;
@@ -284,7 +285,7 @@ public class AutoAlgo1 {
 		public void run() {
 		    // Your database code here
 			seconds++;
-			//System.out.println(seconds);
+			System.out.println(seconds);
 		  }
 		};
 	Point init_point;
@@ -299,8 +300,8 @@ public class AutoAlgo1 {
 			Point dronePoint = drone.getOpticalSensorLocation();
 			init_point = new Point(dronePoint);
 			points.add(dronePoint);
-			System.out.println(dronePoint.toString());
 			mGraph.addVertex(dronePoint.toString());
+			fullGraph.addVertex(dronePoint.toString());
 			//fullGraph.addVertex(dronePoint);
 			is_init = false;
 			
@@ -317,39 +318,39 @@ public class AutoAlgo1 {
 		
 		if(SimulationWindow.return_home) {
 			wait_to_update++;
-			int maneuverDegree = 360 +(int)(Tools.getRotationBetweenPoints(dronePoint, getLastPoint()));
-             //if(maneuverDegree < 0)
-            	// maneuverDegree += 360;
-             
+			//updateVisited();
+			int maneuverDegree=180+(int)(Tools.getRotationBetweenPoints(dronePoint , getLastPoint()));;
+			if(dronePoint.x < getLastPoint().x)
+			maneuverDegree = 360+(int)(Tools.getRotationBetweenPoints(dronePoint , getLastPoint()));
+
 			if(!return_home_maneuver) {
 				this.drone.stopDrone();
 				mGraph.addVertex(dronePoint.toString());
 				mGraph.addEdge(getLastPoint().toString(), dronePoint.toString());
+				fullGraph.addVertex(dronePoint.toString());
+				fullGraph.addEdge(getLastPoint().toString(), dronePoint.toString());
 				points.add(dronePoint);
 				
-				DijkstraShortestPath<String, DefaultEdge> dijkstraAlg = new DijkstraShortestPath<>(mGraph);				
+				DijkstraShortestPath<String, DefaultEdge> dijkstraAlg = new DijkstraShortestPath<>(fullGraph);				
 				GraphPath<String, DefaultEdge> path = dijkstraAlg.getPath(init_point.toString(), getLastPoint().toString());
-				System.out.println(dijkstraAlg.getPathWeight(init_point.toString(), getLastPoint().toString()));
+				
 
 				List<String> vertics = path.getVertexList();
 				ArrayList<Point> temp = new ArrayList<Point>(points);
 				for(Point p : points) {
 					if(!vertics.contains(p.toString()))
 						temp.remove(p);
-					System.out.println(p.toString());
+					
 				}
 				points = temp;
-				//int maneuverDegree = (int)(Tools.getRotationBetweenPoints(dronePoint, getLastPoint())* Math.PI / 180);
-				//System.out.println(maneuverDegree);
 			    this.drone.escapeManeuver(180);// maneuver to the same direction of the last path point
-			    return_home_maneuver = true;
-			    System.out.println(points.size());
 			    speedUp();
+			    return_home_maneuver = true;
 			}
-			if(wait_to_update > 2000 || Tools.getDistanceBetweenPoints(dronePoint, getLastPoint()) < max_distance_between_points/2 && wait_to_update > 100) {
-				System.out.println("updating degree : "+maneuverDegree);
+			if(wait_to_update > 800 || Tools.getDistanceBetweenPoints(dronePoint, getLastPoint()) < max_distance_between_points/2 && wait_to_update > 50) {
+				
 				this.drone.stopDrone();
-				this.drone.escapeManeuver(maneuverDegree);
+				this.drone.directDrone(maneuverDegree);
 				speedUp();
 				wait_to_update = 0;
 			}
@@ -359,13 +360,14 @@ public class AutoAlgo1 {
 				if(points.size() <= 1 && Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) <  max_distance_between_points/4) {
 					speedDown();
 				} else {
+					if(points.size() > 1)
+					mGraph.addEdge(getLastPoint().toString(), points.get(points.size()-2).toString());
 					removeLastPoint();
 				}
 				if(points.size() == 0)
 					this.drone.stopDrone();
 			}
-			//System.out.println(maneuverDegree);
-			//System.out.println("trying to reach : "+ getLastPoint().toString());
+			
 		}
 		// Reach to the last suspected point and then continue
 		else if(return_suspect) {
@@ -373,23 +375,17 @@ public class AutoAlgo1 {
 				   this.drone.escapeManeuver(180);
 				   return_suspect_maneuver = true;
 				}
-			System.out.println(Tools.getDistanceBetweenPoints(this.suspectedPoints.get(suspectedPoints.size()-1), dronePoint) +"  ,  " + max_distance_between_points/5);
-			//if(getLastPoint().equals(this.suspectedPoints.get(suspectedPoints.size()-1))) {
-				//System.out.println("next up - suspect point");
+			
 			if(Tools.getDistanceBetweenPoints(this.suspectedPoints.get(suspectedPoints.size()-1), dronePoint) <  max_distance_between_points/4) {
-				System.out.println("reached to the most recent suspect point");
+				
 				suspectedPoints.remove(suspectedPoints.size()-1);
-				System.out.println("point deleted - changing to false");
 				last_suspect_deletion = seconds;
 				return_suspect = false;
 				return_suspect_maneuver = false;
 				
 				}
-			//}
-			//if(!points.contains(this.suspectedPoints.get(suspectedPoints.size()-1)))
-				//return_suspect = false;
+			
 			else if( Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) <  max_distance_between_points/2) {
-				System.out.println("i got here instead");
 				if(points.size() <= 1 && Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) <  max_distance_between_points/4) {
 					speedDown();
 				} else {
@@ -398,19 +394,21 @@ public class AutoAlgo1 {
 				
 			}
 		}
-		else {//change points on the map here
+		else {
 			if( Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >=  max_distance_between_points && last_suspect_deletion + 2 < seconds) {
 		
 				
 				mGraph.addVertex(dronePoint.toString());
 				mGraph.addEdge(getLastPoint().toString(), dronePoint.toString());
+				fullGraph.addVertex(dronePoint.toString());
+				fullGraph.addEdge(getLastPoint().toString(), dronePoint.toString());
 				points.add(dronePoint);
-				//fullGraph.addVertex(dronePoint);
+			
 				if(this.drone.lidars.get(1).current_distance > 299 && !return_suspect || this.drone.lidars.get(2).current_distance > 299 && !return_suspect) 
 					suspectedPoints.add(dronePoint);
 				for(Point vertex: points) {
 					if(Tools.getDistanceBetweenPoints(vertex, getLastPoint()) <  max_distance_between_points && !vertex.equals(getLastPoint()))
-						mGraph.addEdge(vertex.toString(), points.get(points.size()-1).toString());
+						fullGraph.addEdge(vertex.toString(), points.get(points.size()-1).toString());
 				}
 
 				
@@ -469,15 +467,15 @@ public class AutoAlgo1 {
 			    if(this.drone.getSpeed() == 0 && seconds > 0) {  // if stuck
 					waiting++;
 					if(waiting > 100 ) {
-						//System.out.println("rotating left");
+					
 						this.drone.escapeManeuver(45);
 						waiting = 0;
 						speedUp();
 					}
 				}
-			  //  System.out.println("lidar : "+c);
+		
 			    if(c < 30 && c > 0 && seconds > 0 ) {
-			    	//System.out.println("emergency escape");
+			    
 			    	this.drone.stopDrone();
 			    	this.drone.escapeManeuver(60);
 			    	speedUp();
@@ -493,6 +491,7 @@ public class AutoAlgo1 {
 					
 					if(SimulationWindow.return_home) {
 						if( Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) <  max_distance_between_points/5) {
+							mGraph.addEdge(getLastPoint().toString(), points.get(points.size()-2).toString());
 							removeLastPoint();
 						}
 					} else {
@@ -500,10 +499,12 @@ public class AutoAlgo1 {
 							
 							mGraph.addVertex(dronePoint.toString());
 							mGraph.addEdge(getLastPoint().toString(), dronePoint.toString());
+							fullGraph.addVertex(dronePoint.toString());
+							fullGraph.addEdge(getLastPoint().toString(), dronePoint.toString());
 							points.add(dronePoint);
 							if(this.drone.lidars.get(1).current_distance > 299 && !return_suspect || this.drone.lidars.get(2).current_distance > 299 && !return_suspect) {
 								suspectedPoints.add(dronePoint);
-							    //System.out.println("a suspect point!");	
+							    	
 							}
 						}
 					}
@@ -525,7 +526,7 @@ public class AutoAlgo1 {
 					}
 				}
 				
-				//System.out.println(suspectedPoints.size());
+			
 				
 				spinBy(spin_by,true,new Func() { 
 						@Override
@@ -537,7 +538,7 @@ public class AutoAlgo1 {
 			}
 		}
 			
-		//}
+		
 	}
 	
 	int counter = 0;
