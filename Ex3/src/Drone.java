@@ -101,6 +101,11 @@ public class Drone {
 		gyroRotation += degree;
 		gyroRotation = formatRotation(gyroRotation);
 	}
+	
+	/*public void directDrone(int degree) {
+		rotation = degree;
+		gyroRotation = degree;
+	}*/
 
 	
 	public void rotateLeft(int deltaTime) {

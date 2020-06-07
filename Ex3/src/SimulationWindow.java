@@ -5,6 +5,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import org.jgrapht.ext.JGraphXAdapter;
+import org.jgrapht.graph.DefaultEdge;
+
+import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.layout.mxIGraphLayout;
+import com.mxgraph.swing.mxGraphComponent;
+
 public class SimulationWindow {
 
 	private JFrame frame;
@@ -254,7 +261,20 @@ public class SimulationWindow {
 		{
 			  public void actionPerformed(ActionEvent e)
 			  {
-				  algo1.mGraph.drawGraph();
+				  //algo1.mGraph.drawGraph();
+			    	JFrame new_window = new JFrame();
+			    	new_window.setSize(500,500);
+			    	new_window.setTitle("Graph Viewer");
+			    	JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(algo1.mGraph);
+
+			        mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+			        layout.execute(graphAdapter.getDefaultParent());
+
+			        new_window.add(new mxGraphComponent(graphAdapter));
+
+			        new_window.pack();
+			        new_window.setLocationByPlatform(true);
+			        new_window.setVisible(true);
 			  }
 		});
 		Graph.setBounds(1600, 400, 120, 50);

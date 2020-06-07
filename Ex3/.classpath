@@ -6,19 +6,19 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/antlr4-runtime-4.7.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/commons-lang3-3.8.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/commons-text-1.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/fastutil-8.2.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/guava-28.0-jre.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgrapht-bundle-1.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgrapht-core-1.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgrapht-demo-1.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgrapht-ext-1.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgrapht-guava-1.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgrapht-io-1.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgrapht-opt-1.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jgraphx-3.9.8.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/jheaps-0.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/antlr4-runtime-4.7.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/commons-lang3-3.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/commons-text-1.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/fastutil-8.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/guava-28.0-jre.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgrapht-bundle-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgrapht-core-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgrapht-demo-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgrapht-ext-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgrapht-guava-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgrapht-io-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgrapht-opt-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jgraphx-3.9.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/yinon/Desktop/lib/ex-jars/jheaps-0.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
